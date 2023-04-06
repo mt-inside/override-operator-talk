@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: service-chain
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - service-chain
+  http:
+    - match:
+        - uri: { prefix: / }
+      route:
+        - destination:
+            host: service-1-c81f4a2b
+            port:
+              number: 80

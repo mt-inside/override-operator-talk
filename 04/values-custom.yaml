@@ -1,0 +1,21 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+spec:
+  # hub: containers.istio.tetratelabs.com - might wanna run TID, but should change to its getmesh installer for that
+  # tag: 1.13.5-tetratefips-v0-distroless - not that anything pre-1.15 won't have arm64 images
+  # tag: from istioctl version
+  profile: demo
+  meshConfig:
+    accessLogFile: /dev/stdout
+    outboundTrafficPolicy:
+      mode: REGISTRY_ONLY
+  components:
+    ingressGateways:
+      - name: istio-ingressgateway
+        enabled: true
+        k8s:
+          service:
+            # Only send traffic hitting the ingressgateway Service{LB} to Pods on the Node it lands at.
+            # - Breaks load balancing (but we don't care and we're single-node)
+            # - Preserves source IP (useful for getting http-log to show off the traffic route)
+            externalTrafficPolicy: Local
